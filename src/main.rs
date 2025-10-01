@@ -80,6 +80,10 @@ async fn root() -> Html<String> {
     let memory_usage = format_usage(sys.used_memory() as f64, sys.total_memory() as f64);
     let swap_usage   = format_usage(sys.used_swap() as f64, sys.total_swap() as f64);
 
+    // Get current time for last updated
+    let now = chrono::Local::now();
+    let last_updated = now.format("%Y-%m-%d %H:%M:%S").to_string();
+
     let html_template =
         fs::read_to_string("templates/index.html")
             .unwrap_or_else(|_| "<h1>Error loading template</h1>".to_string());
@@ -91,7 +95,8 @@ async fn root() -> Html<String> {
         .replace("{{cpu_count}}", &sys.cpus().len().to_string())
         .replace("{{memory_usage}}", &memory_usage)
         .replace("{{swap_usage}}", &swap_usage)
-        .replace("{{disk_info}}", &disk_info);
+        .replace("{{disk_info}}", &disk_info)
+        .replace("{{last_updated}}", &last_updated);
     
     Html(html_content)
 }
