@@ -8,68 +8,111 @@
     <meta http-equiv="refresh" content="60">
 </head>
 <body>
-    <div class="container">
-	<h1>Dashboard</h1>
+    <div class="dashboard">
+        <div class="container" id="systemMonitor">
+            <h2>System Data</h2>
 
-	<div class="system-info">
-	    <div class="info-item">
-		<div class="info-title">Linux Distro</div>
-		<div class="info-value">{{system_name}}</div>
-	    </div>
-	    <div class="info-item">
-		<div class="info-title">Kernel Version</div>
-		<div class="info-value">{{kernel_version}}</div>
-	    </div>
-	    <div class="info-item">
-		<div class="info-title">Host Name</div>
-		<div class="info-value">{{host_name}}</div>
-	    </div>
-	</div>
+            <div class="system-info">
+                <div class="info-item">
+                    <div class="info-title">Linux Distro</div>
+                    <div class="info-value">{{system_name}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-title">Kernel Version</div>
+                    <div class="info-value">{{kernel_version}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-title">Host Name</div>
+                    <div class="info-value">{{host_name}}</div>
+                </div>
+            </div>
 
-	<div class="system-info">
-	    {{disk_info}}
-	</div>
+            <div class="system-info">
+                {{disk_info}}
+            </div>
 
-	<div class="metrics-grid">
-	    <div class="metric memory-metric">
-		<span class="metric-name">Used Memory:</span>
-		<span class="metric-value">{{memory_usage}}</span>
-	    </div>
+            <div class="metrics-grid">
+                <div class="metric memory-metric">
+                    <span class="metric-name">Used Memory:</span>
+                    <span class="metric-value">{{memory_usage}}</span>
+                </div>
 
-	    <div class="metric swap-metric">
-		<span class="metric-name">Swap Usage:</span>
-		<span class="metric-value">{{swap_usage}}</span>
-	    </div>
+                <div class="metric swap-metric">
+                    <span class="metric-name">Swap Usage:</span>
+                    <span class="metric-value">{{swap_usage}}</span>
+                </div>
 
-	    <div class="metric">
-		<span class="metric-name">CPU Threads:</span>
-		<span class="metric-value">{{cpu_count}}</span>
-	    </div>
-	</div>
+                <div class="metric">
+                    <span class="metric-name">CPU Threads:</span>
+                    <span class="metric-value">{{cpu_count}}</span>
+                </div>
+            </div>
 
-	<div class="refresh-indicator">
-	    Page refreshes automatically every 60 seconds
-	</div>
+            <div class="refresh-indicator">
+                Page refreshes automatically every 60 seconds
+            </div>
+        </div>
+
+        <div class="container" id="rss">
+            <h2>RSS Feed</h2>
+            <p>Placeholder content for RSS feed.</p>
+        </div>
+
+	<div class="container" id="todo">
+            <h2>Todo</h2>
+            <p>Placeholder content for todo list.</p>
+        </div>
+
+	<div class="container" id="notes">
+            <h2>Notes</h2>
+            <p>Placeholder content for notes.</p>
+        </div>
     </div>
 
     <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+    <button class="container-select" onclick="toggleFlyout()">Select Container</button>
+    <div id="flyout" class="flyout hidden">
+        <label><input type="checkbox" value="systemMonitor" checked> System Data</label>
+        <label><input type="checkbox" value="rss" checked> RSS Feed</label>
+	<label><input type="checkbox" value="todo" checked> Todo</label>
+	<label><input type="checkbox" value="notes" checked> Notes</label>
+    </div>
 
     <script>
-      function toggleTheme() {
-	    document.body.classList.toggle('light-mode');
-	    const isLightMode = document.body.classList.contains('light-mode');
-	    localStorage.setItem('lightMode', isLightMode);
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLightMode = document.body.classList.contains('light-mode');
+		localStorage.setItem('lightMode', isLightMode);            
 
-	    // Update button text
-	    const button = document.querySelector('.theme-toggle');
-	    if (isLightMode) {
-		button.textContent = 'Switch to Dark Mode';
-	    } else {
-		button.textContent = 'Switch to Light Mode';
-	    }
-      }
+            // Update button text
+            const button = document.querySelector('.theme-toggle');
+            if (isLightMode) {
+                button.textContent = 'Switch to Dark Mode';
+            } else {
+                button.textContent = 'Switch to Light Mode';
+            }
+        }
 
-	// Check for saved theme preference or system preference
+        function toggleFlyout() {
+            const flyout = document.getElementById('flyout');
+            flyout.classList.toggle('hidden');
+        }
+
+        // Handle container selection
+        document.querySelectorAll('#flyout input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const containerId = cb.value;
+                const container = document.getElementById(containerId);
+                if (container) {
+                    if (cb.checked) {
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                    }
+                }
+            });
+        });
+
 	window.addEventListener('DOMContentLoaded', () => {
 	    const savedTheme = localStorage.getItem('darkMode');
 
@@ -78,7 +121,8 @@
 		    document.body.classList.add('dark-mode');
 		    document.querySelector('.theme-toggle').textContent = 'Switch to Light Mode';
 		}
-	    } else {
+	    }
+	    else {
 		// Check system preference
 		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 		    document.body.classList.add('dark-mode');
@@ -86,6 +130,7 @@
 		}
 	    }
 	});
+
     </script>
 </body>
 </html>

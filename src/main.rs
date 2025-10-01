@@ -13,7 +13,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(root))
-        .fallback_service(serve_dir); // Serve static files from templates
+        .fallback_service(serve_dir);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
@@ -40,7 +40,6 @@ async fn root() -> Html<String> {
         let total_space = disk.total_space() as f64;
         let available_space = disk.available_space() as f64;
         let used_space = total_space - available_space;
-        
 
         if total_space > 0.0 {
             let formatted_total = format_bytes(total_space);
@@ -80,7 +79,6 @@ async fn root() -> Html<String> {
 
     let memory_usage = format_usage(sys.used_memory() as f64, sys.total_memory() as f64);
     let swap_usage   = format_usage(sys.used_swap() as f64, sys.total_swap() as f64);
-
 
     let html_template =
         fs::read_to_string("templates/index.html")

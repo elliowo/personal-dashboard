@@ -1,9 +1,18 @@
+body {
+    font-family: 'JetBrains Mono', monospace;
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #2b3339;
+    color: #d3c6aa;
+}
+
 body.dark-mode {
     --bg: #2b3339;
     --bg-alt: #3a4145;
     --fg: #d3c6aa;
     --fg-alt: #8b959c;
-
     --red: #e67e80;
     --green: #a7c080;
     --blue: #7fbbb3;
@@ -18,7 +27,6 @@ body.light-mode {
     --bg-alt: #f3edde;
     --fg: #5c6a72;
     --fg-alt: #8b959c;
-
     --red: #e67e80;
     --green: #8da10d;
     --blue: #2d9574;
@@ -28,32 +36,32 @@ body.light-mode {
     --magenta: #c0529d;
 }
 
+/* Apply dark mode as default by defining the variables directly */
 body {
-    font-family: 'JetBrains Mono', monospace;
-    transition: background-color 0.3s, color 0.3s;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
     background-color: var(--bg);
     color: var(--fg);
 }
 
-.container {
-    max-width: 900px;
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 2000px;
     margin: 0 auto;
-    background-color: var(--bg-alt);
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* Deeper shadow for dark theme */
 }
 
-h1 {
-    text-align: center;
+.container {
+    flex: 1;
+    min-width: 500px;
+    max-width: 600px;
+    background-color: var(--bg-alt);
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+h2{
     color: var(--green);
-    margin-bottom: 30px;
-    font-weight: 700; /* Fira Sans bold */
-    position: relative;
-    padding-bottom: 15px;
-    font-size: 2.2rem;
 }
 
 .metrics-grid {
@@ -68,13 +76,13 @@ h1 {
     align-items: center;
     padding: 15px 20px;
     background-color: var(--bg);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.25); /* Adjusted shadow */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     transition: all 0.3s ease;
-    border-left: 4px solid var(--blue); /* Changed default border color */
+    border-left: 4px solid var(--blue);
 }
 
 .metric:hover {
-    box-shadow: 0 5px 10px rgba(0,0,0,0.35); /* Deeper hover shadow */
+    box-shadow: 0 5px 10px rgba(0,0,0,0.35);
     transform: translateY(-2px);
 }
 
@@ -84,12 +92,12 @@ h1 {
 }
 
 .metric-value {
-    font-weight: 700; /* Fira Sans bold */
+    font-weight: 700;
     text-align: right;
     font-size: 1.2rem;
     min-width: 180px;
-    color: var(--green); /* Still using green for values */
-    font-family: 'JetBrains Mono', monospace; /* Monospace for values */
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .memory-metric {
@@ -101,11 +109,10 @@ h1 {
 }
 
 .system-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 15px;
+    margin-bottom: 25px;
 }
 
 .info-item {
@@ -114,7 +121,7 @@ h1 {
     padding: 18px;
     background-color: var(--bg);
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.25); /* Adjusted shadow */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
     transition: all 0.3s ease;
 }
 
@@ -127,11 +134,11 @@ h1 {
     font-size: 0.95rem;
     color: var(--fg-alt);
     margin-bottom: 8px;
-    font-weight: 700; /* Fira Sans bold */
+    font-weight: 700;
 }
 
 .info-value {
-    font-weight: 700; /* Fira Sans bold */
+    font-weight: 700;
     color: var(--fg);
     font-size: 1.1rem;
 }
@@ -149,7 +156,7 @@ h1 {
     right: 20px;
     background-color: var(--bg-alt);
     color: var(--fg);
-    border: 1px solid var(--fg-alt); /* Subtle border */
+    border: 1px solid var(--fg-alt);
     padding: 10px 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -158,4 +165,41 @@ h1 {
     background-color: var(--bg);
     color: var(--green);
     border-color: var(--green);
+}
+
+.container-select {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background-color: var(--bg-alt);
+    color: var(--fg);
+    border: 1px solid var(--fg-alt);
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.container-select:hover {
+    background-color: var(--bg);
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.flyout {
+    position: fixed;
+    top: 110px;
+    right: 20px;
+    background-color: var(--bg-alt);
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.flyout.hidden {
+    display: none;
+}
+
+.flyout label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--fg);
 }
