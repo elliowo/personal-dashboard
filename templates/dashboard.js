@@ -73,7 +73,7 @@ function submitTodo(button) {
                 // Re-attach click handlers for new todos
                 todoContainer.querySelectorAll('.todo-item').forEach(el => {
                     el.addEventListener('click', (e) => {
-                        if (!e.target.classList.contains('todo-item-delete')) {
+                        if (!e.target.classList.contains('todo-item-incomplete')) {
                             el.classList.toggle('completed');
                         }
                     });
@@ -155,10 +155,9 @@ function loadTodos() {
                 const button = container.querySelector('.todo-add-button').outerHTML;
                 container.innerHTML = heading + button + '<div id="todo-list">' + html + '</div>';
 
-                // Attach click handler for todo items (no delete functionality)
                 container.querySelectorAll('.todo-item').forEach(el => {
                     el.addEventListener('click', (e) => {
-                        if (!e.target.classList.contains('todo-item-delete')) {
+                        if (!e.target.classList.contains('todo-item-incomplete')) {
                             el.classList.toggle('completed');
                         }
                     });
