@@ -1,7 +1,5 @@
 body {
     font-family: 'JetBrains Mono', monospace;
-    transition: background-color 0.3s, color 0.3s;
-    margin: 0;
     padding: 20px;
     min-height: 100vh;
     background-color: #2b3339;
@@ -36,10 +34,35 @@ body.light-mode {
     --magenta: #c0529d;
 }
 
-/* Apply dark mode as default by defining the variables directly */
 body {
     background-color: var(--bg);
     color: var(--fg);
+}
+
+button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: var(--bg-alt);
+    color: var(--fg);
+    border: 1px solid var(--fg-alt);
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button:hover {
+    background-color: var(--bg);
+    color: var(--green);
+    border-color: var(--green);
+}
+
+h2{
+    color: var(--green);
+    position: relative;
+}
+
+a {
+    color: var(--cyan);
 }
 
 .dashboard {
@@ -52,6 +75,7 @@ body {
 }
 
 .container {
+    position: relative;
     flex: 1;
     min-width: 500px;
     max-width: 600px;
@@ -60,9 +84,6 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
-h2{
-    color: var(--green);
-}
 
 .metrics-grid {
     display: grid;
@@ -77,13 +98,11 @@ h2{
     padding: 15px 20px;
     background-color: var(--bg);
     box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    transition: all 0.3s ease;
     border-left: 4px solid var(--blue);
 }
 
 .metric:hover {
     box-shadow: 0 5px 10px rgba(0,0,0,0.35);
-    transform: translateY(-2px);
 }
 
 .metric-name {
@@ -122,12 +141,10 @@ h2{
     background-color: var(--bg);
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-    transition: all 0.3s ease;
 }
 
 .info-item:hover {
     box-shadow: 0 5px 10px rgba(0,0,0,0.35);
-    transform: translateY(-2px);
 }
 
 .info-title {
@@ -150,23 +167,6 @@ h2{
     font-size: 0.9rem;
 }
 
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: var(--bg-alt);
-    color: var(--fg);
-    border: 1px solid var(--fg-alt);
-    padding: 10px 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.theme-toggle:hover {
-    background-color: var(--bg);
-    color: var(--green);
-    border-color: var(--green);
-}
-
 .container-select {
     position: fixed;
     top: 70px;
@@ -176,12 +176,6 @@ h2{
     border: 1px solid var(--fg-alt);
     padding: 10px 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.container-select:hover {
-    background-color: var(--bg);
-    color: var(--green);
-    border-color: var(--green);
 }
 
 .flyout {
@@ -202,4 +196,59 @@ h2{
     display: block;
     margin-bottom: 8px;
     color: var(--fg);
+}
+
+.todo-item {
+    background-color: var(--bg);
+    padding: 15px 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    align-items: center;
+    border-left: 4px solid var(--red);
+}
+
+.todo-item:hover {
+    box-shadow: 0 5px 10px rgba(0,0,0,0.35);
+    background-color: var(--bg-alt);
+}
+
+.todo-item.completed {
+    text-decoration: line-through;
+    color: var(--fg-alt);
+    border-left: 4px solid var(--green);
+}
+
+#todo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#todo-modal .modal-box {
+    background-color: var(--bg);
+    border: 1px solid var(--red);
+    padding: 20px;
+    min-width: 300px;
+}
+
+#todo-modal input {
+    color: var(--fg);
+    background-color: var(--bg);
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+#todo-modal button {
+    position: inherit;
+    margin-right: 8px;
 }

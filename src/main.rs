@@ -1,18 +1,24 @@
 use sysinfo::{System, Disks};
 use axum::{
     response::Html,
-    routing::get,
+    routing::{get},
     Router,
+    extract::Form,
 };
 use std::fs;
 use tower_http::services::ServeDir;
+use rusqlite::{params, Connection};
 
 #[tokio::main]
 async fn main() {
+    // Ensure the SQLite database exists and has a table
+    init_db().expect("Failed to initialize DB");
+
     let serve_dir = ServeDir::new("templates");
 
     let app = Router::new()
         .route("/", get(root))
+        .route("/todos", get(get_todos).post(add_todo))
         .fallback_service(serve_dir);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
@@ -21,6 +27,20 @@ async fn main() {
     println!("Dashboard running on http://0.0.0.0:3000");
     axum::serve(listener, app).await.unwrap();
 }
+
+fn init_db() -> rusqlite::Result<()> {
+    let _ = std::fs::create_dir_all("data");
+    let conn = Connection::open("data/todo.db")?;
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS todos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            text TEXT NOT NULL
+        )",
+        [],
+    )?;
+    Ok(())
+}
+
 
 async fn root() -> Html<String> {
     let mut sys = System::new_all();
@@ -35,7 +55,7 @@ async fn root() -> Html<String> {
     // Get disk information
     let disks = Disks::new_with_refreshed_list();
     let mut disk_info = String::new();
-    
+
     for disk in &disks {
         let total_space = disk.total_space() as f64;
         let available_space = disk.available_space() as f64;
@@ -45,7 +65,7 @@ async fn root() -> Html<String> {
             let formatted_total = format_bytes(total_space);
             let formatted_used = format_bytes(used_space);
             let percentage = (used_space / total_space) * 100.0;
-            
+
             // Create progress bar HTML
             let bar_width = percentage.min(100.0) as u32;
             let bar_color = if percentage > 80.0 {
@@ -53,9 +73,9 @@ async fn root() -> Html<String> {
             } else if percentage > 60.0 {
                 "#f2873a" // orange
             } else {
-                "#98971a" // everforest green
+                "#98971a" // green
             };
-            
+
             disk_info.push_str(&format!(
                 "<div class=\"info-item\">
                     <div class=\"info-title\">{} ({})</div>
@@ -80,7 +100,6 @@ async fn root() -> Html<String> {
     let memory_usage = format_usage(sys.used_memory() as f64, sys.total_memory() as f64);
     let swap_usage   = format_usage(sys.used_swap() as f64, sys.total_swap() as f64);
 
-    // Get current time for last updated
     let now = chrono::Local::now();
     let last_updated = now.format("%Y-%m-%d %H:%M:%S").to_string();
 
@@ -97,12 +116,59 @@ async fn root() -> Html<String> {
         .replace("{{swap_usage}}", &swap_usage)
         .replace("{{disk_info}}", &disk_info)
         .replace("{{last_updated}}", &last_updated);
-    
+
     Html(html_content)
 }
 
+#[derive(Debug)]
+struct TodoItem {
+    id: i32,
+    text: String,
+}
+
+async fn get_todos() -> Html<String> {
+    let conn = Connection::open("data/todo.db").expect("DB open");
+    let mut stmt = conn.prepare("SELECT id, text FROM todos ORDER BY id DESC")
+        .expect("prepare");
+    let todo_iter = stmt
+        .query_map([], |row| {
+            Ok(TodoItem {
+                id: row.get(0)?,
+                text: row.get(1)?,
+            })
+        })
+        .expect("query");
+
+    let mut content = String::new();
+    for item in todo_iter {
+        if let Ok(todo) = item {
+            content.push_str(&format!(
+                "<div class=\"todo-item\" data-id=\"{}\">{}</div>",
+                todo.id, todo.text
+            ));
+        }
+    }
+
+    Html(content)
+}
+
+#[derive(serde::Deserialize)]
+struct NewTodo {
+    text: String,
+}
+
+async fn add_todo(Form(new): Form<NewTodo>) -> Html<String> {
+    let conn = Connection::open("data/todo.db").expect("DB open");
+    conn.execute(
+        "INSERT INTO todos (text) VALUES (?1)",
+        params![new.text],
+    )
+    .expect("insert");
+    get_todos().await
+}
+
+// ---------- Helpers ----------
 fn format_bytes(bytes: f64) -> String {
-    // convert *bytes* → MB or GB (rounded to two decimals)
     if bytes >= 1024.0 * 1024.0 * 1024.0 {
         format!("{:.2} GB", bytes / (1024.0 * 1024.0 * 1024.0))
     } else if bytes >= 1024.0 * 1024.0 {

@@ -53,19 +53,15 @@
             </div>
         </div>
 
-        <div class="container" id="rss">
-            <h2>RSS Feed</h2>
-            <p>Placeholder content for RSS feed.</p>
-        </div>
-
-	<div class="container" id="todo">
+        <div class="container" id="todo">
             <h2>Todo</h2>
-            <p>Placeholder content for todo list.</p>
+            <button class="todo-add-button" onclick="addTodo()">Add Task</button>
+            <div id="todo-list"></div>
         </div>
 
 	<div class="container" id="notes">
-            <h2>Notes</h2>
-            <p>Placeholder content for notes.</p>
+          <h2>Notes</h2>
+	  <button class="notes-add-button">Add Notes</button>
         </div>
     </div>
 
@@ -73,8 +69,7 @@
     <button class="container-select" onclick="toggleFlyout()">Select Container</button>
     <div id="flyout" class="flyout hidden">
         <label><input type="checkbox" value="systemMonitor" checked> System Data</label>
-        <label><input type="checkbox" value="rss" checked> RSS Feed</label>
-	<label><input type="checkbox" value="todo" checked> Todo</label>
+        <label><input type="checkbox" value="todo" checked> Todo</label>
 	<label><input type="checkbox" value="notes" checked> Notes</label>
     </div>
 </body>
